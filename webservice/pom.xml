@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>
-            <version>2.0.0</version>
+            <version>2.1.0</version>
         </dependency>
         <!-- SQLite database JDBC -->
         <!--<dependency>-->
@@ -104,7 +104,7 @@
     </dependencies>
 
     <build>
-        <finalName>employees-server-example</finalName>
+        <finalName>${project.name}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

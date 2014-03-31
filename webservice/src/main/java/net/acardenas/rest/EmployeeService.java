@@ -41,7 +41,7 @@ public class EmployeeService
     public Response getEmployee(@PathParam("employeeId") int aEmployeId)
     {
         Employee myEntity = new Employee();
-        myEntity.setItem(employeeManager.find(aEmployeId));
+        myEntity.setItem(employeeManager.getEmployeeDetails(aEmployeId));
         return Response.status(Response.Status.OK).entity(myEntity).build();
     }
 

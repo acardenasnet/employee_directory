@@ -21,14 +21,14 @@ import net.acardenas.employee.directory.entity.EmployeeEntity;
  */
 public class Employee
 {
-    private EmployeeEntity item;
+    private EmployeeDetails item;
 
-    public EmployeeEntity getItem()
+    public EmployeeDetails getItem()
     {
         return item;
     }
 
-    public void setItem(EmployeeEntity anItem)
+    public void setItem(EmployeeDetails anItem)
     {
         item = anItem;
     }

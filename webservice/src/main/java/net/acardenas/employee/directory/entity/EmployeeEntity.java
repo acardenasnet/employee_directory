@@ -19,6 +19,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -36,7 +37,7 @@ import java.util.List;
  * Created by acardenas on 3/26/14.
  */
 @Entity
-@XmlRootElement(name = "item")
+@XmlRootElement
 @XmlAccessorType(value = XmlAccessType.FIELD)
 @Table(name = "employee")
 public class EmployeeEntity
@@ -53,9 +54,8 @@ public class EmployeeEntity
     @Column(name = "lastName")
     private String lastName;
 
-    @ManyToOne
-    @JoinColumn(name = "managerId")
-    @Basic(optional = true)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "managerId", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private EmployeeEntity managerId;
 
     @Column(name = "title")
