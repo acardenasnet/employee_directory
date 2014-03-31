@@ -1,11 +1,10 @@
 $('#detailsPage').live('pageshow', function(event) {
 	var id = getUrlVars()["id"];
-	$.getJSON(serviceURL + 'getemployee/'+id, displayEmployee);
+	$.getJSON(serviceURL + 'employee/'+id, displayEmployee);
 });
 
 function displayEmployee(data) {
 	var employee = data.item;
-	console.log(employee);
 	$('#employeePic').attr('src', 'pics/' + employee.picture);
 	$('#fullName').text(employee.firstName + ' ' + employee.lastName);
 	$('#employeeTitle').text(employee.title);
