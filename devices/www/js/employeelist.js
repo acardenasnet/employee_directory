@@ -1,4 +1,4 @@
-var serviceURL = "http://acardenas.net/employees-server-example/service/";
+var serviceURL = "http://acardenas.net/employee-server/service/";
 
 var employees;
 
