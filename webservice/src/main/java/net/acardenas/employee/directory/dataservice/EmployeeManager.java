@@ -94,7 +94,6 @@ public class EmployeeManager
 
     public EmployeeDetails getEmployeeDetails(int aKey)
     {
-
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         String myQueryString = "SELECT NEW net.acardenas.rest.domain.EmployeeDetails(" +
@@ -103,10 +102,10 @@ public class EmployeeManager
                 "FROM EmployeeEntity e " +
                 "LEFT JOIN FETCH e.managerId m " +
                 "LEFT OUTER JOIN EmployeeEntity r ON r.managerId = e " +
-                "WHERE e.id = :id ";
+                "WHERE e.id = :id " +
+                "GROUP BY e.lastName ORDER BY e.lastName, e.firstName";
         TypedQuery<EmployeeDetails> typedQuery = entityManager.createQuery(myQueryString, EmployeeDetails.class);
         typedQuery.setParameter("id", aKey);
-        EmployeeDetails myResult = typedQuery.getSingleResult();
         transaction.commit();
         try
         {
@@ -118,28 +117,17 @@ public class EmployeeManager
         }
     }
 
-    public EmployeeReport getEmployeeReport(int aKey)
+    public List<EmployeeReport> getEmployeeReport(int aKey)
     {
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         String myQueryString = "SELECT NEW net.acardenas.rest.domain.EmployeeReport(" +
                 "e.id, e.firstName, e.lastName, e.title, COUNT(r.id) ) " +
                 "FROM EmployeeEntity e " +
                 "LEFT OUTER JOIN EmployeeEntity r ON r.managerId = e " +
-                "WHERE e.managerId.id = :id ";
+                "WHERE e.managerId.id = :id " +
+                "GROUP BY e.id ORDER BY e.lastName, e.firstName";
         TypedQuery<EmployeeReport> typedQuery = entityManager.createQuery(myQueryString, EmployeeReport.class);
         typedQuery.setParameter("id", aKey);
-        EmployeeReport myResult = typedQuery.getSingleResult();
-        transaction.commit();
-        try
-        {
-            return typedQuery.getSingleResult();
-        }
-        catch (NoResultException | NonUniqueResultException e)
-        {
-            return null;
-        }
-
+        return typedQuery.getResultList();
     }
 
     public int createDummyValues()
@@ -170,7 +158,6 @@ public class EmployeeManager
         }
         catch(PersistenceException e)
         {
-            e.printStackTrace();
             transaction.rollback();
         }
 
