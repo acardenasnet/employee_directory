@@ -34,6 +34,12 @@ http://localhost:9090/employee-server/service/employee/{employee_id}/report
 </code>
 </pre>
 
+<pre>To create 12 Records Dummies.
+<code>
+http://localhost:9090/employee-server/service/employee/create/dummy
+</code>
+</pre>
+
 To compilie the phnonegap application, you need move into device folder, and the execute the following command:
 
 <code>
