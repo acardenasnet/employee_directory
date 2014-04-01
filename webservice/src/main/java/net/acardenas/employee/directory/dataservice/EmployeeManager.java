@@ -18,6 +18,7 @@ import net.acardenas.employee.directory.entity.EmployeeEntity;
 import net.acardenas.rest.domain.Employee;
 import net.acardenas.rest.domain.EmployeeDetails;
 import net.acardenas.rest.domain.EmployeeDomain;
+import net.acardenas.rest.domain.EmployeeReport;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -115,6 +116,30 @@ public class EmployeeManager
         {
             return null;
         }
+    }
+
+    public EmployeeReport getEmployeeReport(int aKey)
+    {
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        String myQueryString = "SELECT NEW net.acardenas.rest.domain.EmployeeReport(" +
+                "e.id, e.firstName, e.lastName, e.title, COUNT(r.id) ) " +
+                "FROM EmployeeEntity e " +
+                "LEFT OUTER JOIN EmployeeEntity r ON r.managerId = e " +
+                "WHERE e.managerId.id = :id ";
+        TypedQuery<EmployeeReport> typedQuery = entityManager.createQuery(myQueryString, EmployeeReport.class);
+        typedQuery.setParameter("id", aKey);
+        EmployeeReport myResult = typedQuery.getSingleResult();
+        transaction.commit();
+        try
+        {
+            return typedQuery.getSingleResult();
+        }
+        catch (NoResultException | NonUniqueResultException e)
+        {
+            return null;
+        }
+
     }
 
     public int createDummyValues()
