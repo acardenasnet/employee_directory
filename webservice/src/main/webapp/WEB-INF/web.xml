@@ -5,7 +5,7 @@
          metadata-complete="false"
          id="WebApp_ID"
          version="3.0">
-    <display-name>com.morcinek.server</display-name>
+    <display-name>Employee Server</display-name>
     <listener>
         <listener-class>net.acardenas.rest.GuiceConfiguration</listener-class>
     </listener>
