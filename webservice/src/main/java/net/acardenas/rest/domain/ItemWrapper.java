@@ -14,21 +14,19 @@
 
 package net.acardenas.rest.domain;
 
-import net.acardenas.employee.directory.entity.EmployeeEntity;
-
 /**
  * Created by acardenas on 3/26/14.
  */
-public class Employee
+public class ItemWrapper<T>
 {
-    private EmployeeDetails item;
+    private T item;
 
-    public EmployeeDetails getItem()
+    public T getItem()
     {
         return item;
     }
 
-    public void setItem(EmployeeDetails anItem)
+    public void setItem(T anItem)
     {
         item = anItem;
     }

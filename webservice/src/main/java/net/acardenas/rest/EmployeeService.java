@@ -1,9 +1,10 @@
 package net.acardenas.rest;
 
 import net.acardenas.employee.directory.dataservice.EmployeeManager;
-import net.acardenas.rest.domain.Employee;
+import net.acardenas.rest.domain.EmployeeDetails;
 import net.acardenas.rest.domain.EmployeeDomain;
 import net.acardenas.rest.domain.EmployeeReport;
+import net.acardenas.rest.domain.ItemWrapper;
 import net.acardenas.rest.domain.ItemsWrapper;
 
 import javax.inject.Inject;
@@ -38,7 +39,7 @@ public class EmployeeService
     @Path("/employee/{employeeId}")
     public Response getEmployee(@PathParam("employeeId") int aEmployeId)
     {
-        Employee myEntity = new Employee();
+        ItemWrapper<EmployeeDetails> myEntity = new ItemWrapper<EmployeeDetails>();
         myEntity.setItem(employeeManager.getEmployeeDetails(aEmployeId));
         return Response.status(Response.Status.OK).entity(myEntity).build();
     }
