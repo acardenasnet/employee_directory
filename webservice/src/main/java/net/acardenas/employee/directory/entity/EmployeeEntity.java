@@ -14,8 +14,6 @@
 
 package net.acardenas.employee.directory.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
@@ -25,17 +23,41 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by acardenas on 3/26/14.
  */
+@NamedQueries({
+        @NamedQuery(name = EmployeeEntity.ALL_EMPLOYEES_DOMAIN_QUERY,
+                query = "SELECT NEW net.acardenas.rest.domain.EmployeeDomain(" +
+                        "e.id, e.firstName, e.lastName, e.title, e.picture, COUNT(r.id) )" +
+                        "FROM EmployeeEntity e " +
+                        "LEFT OUTER JOIN EmployeeEntity r ON r.managerId = e " +
+                        "GROUP BY e.id ORDER BY e.lastName, e.firstName"),
+        @NamedQuery(name = EmployeeEntity.DETAILS_EMPLOYEES_QUERY,
+                query = "SELECT NEW net.acardenas.rest.domain.EmployeeDetails(" +
+                        "e.id, e.firstName, e.lastName, m.id , e.title, e.department, e.city, " +
+                        "e.officePhone, e.cellPhone, e.email, e.picture, m.firstName, m.lastName, COUNT(r.id) ) " +
+                        "FROM EmployeeEntity e " +
+                        "LEFT JOIN FETCH e.managerId m " +
+                        "LEFT OUTER JOIN EmployeeEntity r ON r.managerId = e " +
+                        "WHERE e.id = :" + EmployeeEntity.ID_PARAMETER +
+                        " GROUP BY e.lastName ORDER BY e.lastName, e.firstName"),
+        @NamedQuery(name = EmployeeEntity.REPORTS_EMPLOYEES_QUERY,
+                query = "SELECT NEW net.acardenas.rest.domain.EmployeeReport(" +
+                        "e.id, e.firstName, e.lastName, e.title, COUNT(r.id) ) " +
+                        "FROM EmployeeEntity e " +
+                        "LEFT OUTER JOIN EmployeeEntity r ON r.managerId = e " +
+                        "WHERE e.managerId.id = :" + EmployeeEntity.ID_PARAMETER +
+                        " GROUP BY e.id ORDER BY e.lastName, e.firstName")
+})
 @Entity
 @XmlRootElement
 @XmlAccessorType(value = XmlAccessType.FIELD)
@@ -43,6 +65,13 @@ import java.util.List;
 public class EmployeeEntity
     implements Serializable
 {
+    public static final String ALL_EMPLOYEES_DOMAIN_QUERY = "employeeEntity.allDomain";
+    public static final String DETAILS_EMPLOYEES_QUERY = "employeeEntity.employeeDetails";
+    public static final String REPORTS_EMPLOYEES_QUERY = "employeeEntity.employeeReport";
+
+    public static final String ID_PARAMETER = "id";
+
+
     @Id
     @GeneratedValue
     @Column(name = "id")

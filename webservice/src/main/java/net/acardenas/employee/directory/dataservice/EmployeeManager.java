@@ -15,7 +15,6 @@
 package net.acardenas.employee.directory.dataservice;
 
 import net.acardenas.employee.directory.entity.EmployeeEntity;
-import net.acardenas.rest.domain.Employee;
 import net.acardenas.rest.domain.EmployeeDetails;
 import net.acardenas.rest.domain.EmployeeDomain;
 import net.acardenas.rest.domain.EmployeeReport;
@@ -28,7 +27,6 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,40 +49,9 @@ public class EmployeeManager
 
     public List<EmployeeDomain> getAllEmployeesDomain()
     {
-        String myQueryString = "SELECT NEW net.acardenas.rest.domain.EmployeeDomain(" +
-                "e.id, e.firstName, e.lastName, e.title, e.picture, COUNT(r.id) )" +
-                "FROM EmployeeEntity e " +
-                "LEFT OUTER JOIN EmployeeEntity r ON r.managerId = e " +
-                "GROUP BY e.id ORDER BY e.lastName, e.firstName";
-        TypedQuery<EmployeeDomain> typedQuery = entityManager.createQuery(myQueryString, EmployeeDomain.class);
+        TypedQuery<EmployeeDomain> typedQuery = entityManager.createNamedQuery(
+                EmployeeEntity.ALL_EMPLOYEES_DOMAIN_QUERY, EmployeeDomain.class);
         return typedQuery.getResultList();
-    }
-
-    public List<EmployeeDomain> getAllEmployeesDomainNative()
-    {
-        String myQueryString = "SELECT " +
-                "e.id, e.firstName, e.lastName, e.title, e.picture, COUNT(r.id)  " +
-                "FROM employee e " +
-                "LEFT OUTER JOIN employee r ON r.managerId = e.id " +
-                "GROUP BY e.id ORDER BY e.lastName, e.firstName";
-        Query typedQuery = entityManager.createNativeQuery(myQueryString);
-
-        List<Object[]> myEmployeeDomains = typedQuery.getResultList();
-        List<EmployeeDomain> myResult = new ArrayList<EmployeeDomain>();
-
-        for (Object[] myObject : myEmployeeDomains)
-        {
-            EmployeeDomain myEmployeeDomain = new EmployeeDomain();
-            myEmployeeDomain.setId((Integer) myObject[0]);
-            myEmployeeDomain.setFirstName((String) myObject[1]);
-            myEmployeeDomain.setLastName((String) myObject[2]);
-            myEmployeeDomain.setTitle((String) myObject[3]);
-            myEmployeeDomain.setPicture((String) myObject[4]);
-            myEmployeeDomain.setReportCount((Long) myObject[5]);
-            myResult.add(myEmployeeDomain);
-        }
-
-        return myResult;
     }
 
     public EmployeeEntity find(int aKey)
@@ -96,16 +63,9 @@ public class EmployeeManager
     {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
-        String myQueryString = "SELECT NEW net.acardenas.rest.domain.EmployeeDetails(" +
-                "e.id, e.firstName, e.lastName, m.id , e.title, e.department, e.city, " +
-                "e.officePhone, e.cellPhone, e.email, e.picture, m.firstName, m.lastName, COUNT(r.id) ) " +
-                "FROM EmployeeEntity e " +
-                "LEFT JOIN FETCH e.managerId m " +
-                "LEFT OUTER JOIN EmployeeEntity r ON r.managerId = e " +
-                "WHERE e.id = :id " +
-                "GROUP BY e.lastName ORDER BY e.lastName, e.firstName";
-        TypedQuery<EmployeeDetails> typedQuery = entityManager.createQuery(myQueryString, EmployeeDetails.class);
-        typedQuery.setParameter("id", aKey);
+        TypedQuery<EmployeeDetails> typedQuery = entityManager.createNamedQuery(
+                EmployeeEntity.DETAILS_EMPLOYEES_QUERY, EmployeeDetails.class);
+        typedQuery.setParameter(EmployeeEntity.ID_PARAMETER, aKey);
         transaction.commit();
         try
         {
@@ -119,14 +79,9 @@ public class EmployeeManager
 
     public List<EmployeeReport> getEmployeeReport(int aKey)
     {
-        String myQueryString = "SELECT NEW net.acardenas.rest.domain.EmployeeReport(" +
-                "e.id, e.firstName, e.lastName, e.title, COUNT(r.id) ) " +
-                "FROM EmployeeEntity e " +
-                "LEFT OUTER JOIN EmployeeEntity r ON r.managerId = e " +
-                "WHERE e.managerId.id = :id " +
-                "GROUP BY e.id ORDER BY e.lastName, e.firstName";
-        TypedQuery<EmployeeReport> typedQuery = entityManager.createQuery(myQueryString, EmployeeReport.class);
-        typedQuery.setParameter("id", aKey);
+        TypedQuery<EmployeeReport> typedQuery = entityManager.createNamedQuery(
+                EmployeeEntity.REPORTS_EMPLOYEES_QUERY, EmployeeReport.class);
+        typedQuery.setParameter(EmployeeEntity.ID_PARAMETER, aKey);
         return typedQuery.getResultList();
     }
 
@@ -162,7 +117,5 @@ public class EmployeeManager
         }
 
         return myReturn;
-
     }
-
 }
