@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +37,6 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity
 {
     public final static String EXTRA_MESSAGE = "com.example.webapitutorial.MESSAGE";
-
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -72,6 +72,8 @@ public class MainActivity extends ActionBarActivity
                 imagen_entrada.setImageResource(((Lista_entrada) entrada).get_idImagen());
             }
         });
+
+
     }
 
 
@@ -98,21 +100,7 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    // This is the method that is called when the submit button is clicked
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    public void verifyEmail(View view)
-    {
-
-//        EditText emailEditText = (EditText) findViewById(R.id.email_address);
-//        String email = emailEditText.getText().toString();
-//        System.out.println(email);
-//        if( email != null && !email.isEmpty()) {
-        String urlString = "http://192.168.1.99/employee-server/service/employees";
-//        new CallAPI(this).execute(urlString);
-//        }
-
-    }
     class CallAPI extends AsyncTask<String, String, String>
     {
         ImageView imageView;
@@ -131,6 +119,14 @@ public class MainActivity extends ActionBarActivity
             }
 
             return imageView;
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+            View myBlockerView = findViewById(R.id.blocker);
+            myBlockerView.setVisibility(View.VISIBLE);
         }
 
         protected String doInBackground(String... params)
@@ -213,6 +209,9 @@ public class MainActivity extends ActionBarActivity
                     datos.add(new Lista_entrada(getResources().getIdentifier(pic,
                             "drawable", getPackageName()), firstName + " " + lastName, title));
                 }
+
+                View myBlockerView = findViewById(R.id.blocker);
+                myBlockerView.setVisibility(View.GONE);
             } catch (JSONException e)
             {
                 e.printStackTrace();
