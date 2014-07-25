@@ -103,23 +103,6 @@ public class MainActivity extends ActionBarActivity
 
     class CallAPI extends AsyncTask<String, String, String>
     {
-        ImageView imageView;
-        public ImageView changeImage(String path)
-        {
-            try
-            {
-                int imgID = getResources().getIdentifier(path, "drawable",
-                        "your_package_name_here");
-                imageView.setImageResource(imgID);
-            }
-            catch(Exception e)
-            {
-                Toast.makeText(MainActivity.this, e.getMessage() + "Error : ",
-                        Toast.LENGTH_SHORT).show();
-            }
-
-            return imageView;
-        }
 
         @Override
         protected void onPreExecute()
